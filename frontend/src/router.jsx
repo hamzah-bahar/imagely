@@ -7,6 +7,7 @@ import GuestLayout from "./components/layouts/GuestLayout";
 import DefaultLayout from "./components/layouts/DefaultLayout";
 import AdminLayout from "./components/layouts/AdminLayout";
 import Dashboard from "./views/Dashboard";
+import Home from "./views/Home";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <DefaultLayout />,
+    children: [{ path: "/home", element: <Home /> }],
   },
   {
     path: "/",
