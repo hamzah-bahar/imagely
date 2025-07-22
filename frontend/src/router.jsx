@@ -3,20 +3,45 @@ import Login from "./views/Login";
 import Register from "./views/Register";
 import Users from "./views/Users";
 import NotFound from "./views/NotFound";
+import GuestLayout from "./components/layouts/GuestLayout";
+import DefaultLayout from "./components/layouts/DefaultLayout";
+import AdminLayout from "./components/layouts/AdminLayout";
+import Dashboard from "./views/Dashboard";
 
 const router = createBrowserRouter([
   {
-    path: "/login",
-    element: <Login />,
+    path: "/",
+    element: <GuestLayout />,
+    children: [
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+    ],
   },
   {
-    path: "/register",
-    element: <Register />,
+    path: "/",
+    element: <DefaultLayout />,
   },
   {
-    path: "/users",
-    element: <Users />,
+    path: "/",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "/users",
+        element: <Users />,
+      },
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+      },
+    ],
   },
+
   {
     path: "*",
     element: <NotFound />,
