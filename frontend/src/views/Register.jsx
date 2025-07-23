@@ -1,8 +1,38 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
+import client from "../client";
+import { UserContext } from "../contexts/UserProvider";
 
 export default function Register() {
+  const usernameRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const passwordConfirmationRef = useRef();
+  const { setUser, setToken } = UserContext();
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const payload = {
+      username: usernameRef.current.value,
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      password_confirmation: passwordConfirmationRef.current.value,
+    };
+
+    client
+      .post("/register", payload)
+      .then(({ data }) => {
+        setToken(data.token);
+        setUser(data.user);
+      })
+      .catch((error) => {
+        const response = error.response;
+        if (response && response.status === 422) {
+          console.log(response.data.errors);
+        }
+      });
+  };
   return (
-    <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-2xs max-w-xl mx-auto w-full">
+    <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-2xs max-w-xl mx-auto w-full animate-slide-in">
       <div className="p-4 sm:p-7">
         <div className="text-center">
           <h1 className="block text-2xl font-bold text-gray-800">
@@ -21,18 +51,18 @@ export default function Register() {
 
         <div className="mt-5">
           {/* Form */}
-          <form>
+          <form onSubmit={onSubmit}>
             <div className="grid gap-y-4">
               {/* Form Group */}
               <div>
-                <label htmlFor="email" className="block text-sm mb-2">
+                <label htmlFor="username" className="block text-sm mb-2">
                   Username
                 </label>
                 <div className="relative">
                   <input
+                    ref={usernameRef}
                     type="text"
                     id="username"
-                    name="username"
                     className="py-2.5 sm:py-3 px-4 block w-full border border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                     required
                     aria-describedby="username-error"
@@ -52,7 +82,7 @@ export default function Register() {
                 </div>
                 <p
                   className="hidden text-xs text-red-600 mt-2"
-                  id="email-error"
+                  id="username-error"
                 >
                   Please include a valid email address so we can get back to you
                 </p>
@@ -65,9 +95,9 @@ export default function Register() {
                 </label>
                 <div className="relative">
                   <input
+                    ref={emailRef}
                     type="email"
                     id="email"
-                    name="email"
                     className="py-2.5 sm:py-3 px-4 block w-full border border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                     required
                     aria-describedby="email-error"
@@ -103,9 +133,9 @@ export default function Register() {
                 </div>
                 <div className="relative">
                   <input
+                    ref={passwordRef}
                     type="password"
                     id="password"
-                    name="password"
                     className="py-2.5 sm:py-3 px-4 block w-full border border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                     required
                     aria-describedby="password-error"
@@ -123,26 +153,22 @@ export default function Register() {
               {/* Form Group */}
               <div>
                 <div className="flex flex-wrap justify-between items-center gap-2">
-                  <label htmlFor="password" className="block text-sm mb-2">
+                  <label
+                    htmlFor="password_confirmation"
+                    className="block text-sm mb-2"
+                  >
                     Confirm Password
                   </label>
                 </div>
                 <div className="relative">
                   <input
+                    ref={passwordConfirmationRef}
                     type="password"
-                    id="password"
-                    name="password"
+                    id="password_confirmation"
                     className="py-2.5 sm:py-3 px-4 block w-full border border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                     required
-                    aria-describedby="password-error"
                   />
                 </div>
-                <p
-                  className="hidden text-xs text-red-600 mt-2"
-                  id="password-error"
-                >
-                  8+ characters required
-                </p>
               </div>
               {/* End Form Group */}
 

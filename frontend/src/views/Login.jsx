@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 
 export default function Login() {
+  const onSubmit = (e) => {
+    e.preventDefault();
+  };
   return (
-    <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-2xs max-w-xl mx-auto w-full">
+    <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-2xs max-w-xl mx-auto w-full animate-slide-in">
       <div className="p-4 sm:p-7">
         <div className="text-center">
           <h1 className="block text-2xl font-bold text-gray-800">
@@ -21,7 +24,7 @@ export default function Login() {
 
         <div className="mt-5">
           {/* Form */}
-          <form>
+          <form onSubmit={onSubmit}>
             <div className="grid gap-y-4">
               {/* Form Group */}
               <div>

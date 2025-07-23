@@ -11,9 +11,7 @@ const UserContext = createContext({
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({});
-  const [token, _setToken] = useState(
-    localStorage.getItem("ACCESS_TOKEN") || null
-  );
+  const [token, _setToken] = useState(localStorage.getItem("ACCESS_TOKEN"));
 
   const setToken = (token) => {
     if (token) {
@@ -34,12 +32,9 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext
-      value={{ user, token, setUser, setToken, isAdmin, isAuthenticated }}
-    >
+    <UserContext value={{ user, setUser, setToken, isAdmin, isAuthenticated }}>
       {children}
     </UserContext>
   );
 };
 export { UserContext };
-//export const useUserContext = () => useContext(UserContext);
