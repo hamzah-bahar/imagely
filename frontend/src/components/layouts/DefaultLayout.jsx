@@ -4,8 +4,8 @@ import { UserContext } from "../../contexts/UserProvider";
 import Header from "../Header";
 
 export default function DefaultLayout() {
-  const { token } = use(UserContext);
-  if (!token) {
+  const { isAuthenticated } = use(UserContext);
+  if (!isAuthenticated()) {
     return <Navigate to="/login" replace />;
   }
   return (

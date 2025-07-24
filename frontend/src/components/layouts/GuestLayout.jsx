@@ -4,10 +4,8 @@ import { UserContext } from "../../contexts/UserProvider";
 import Header from "../Header";
 
 export default function GuestLayout() {
-  const { isAuthenticated, isAdmin } = use(UserContext);
-  if (isAuthenticated() && isAdmin()) {
-    return <Navigate to="/dashboard" replace />;
-  } else if (isAuthenticated()) {
+  const { isAuthenticated } = use(UserContext);
+  if (isAuthenticated()) {
     return <Navigate to="/home" replace />;
   }
   return (

@@ -3,11 +3,9 @@ import { Link, Navigate, Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/UserProvider";
 
 export default function AdminLayout() {
-  const { isAuthenticated, isAdmin } = use(UserContext);
-  if (!isAuthenticated || !isAdmin) {
+  const { isAdmin } = use(UserContext);
+  if (!isAdmin()) {
     return <Navigate to="/login" replace />;
-  } else if (!isAdmin()) {
-    return <Navigate to="/home" replace />;
   }
   return (
     <>

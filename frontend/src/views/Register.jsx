@@ -1,6 +1,6 @@
-import { useRef } from "react";
+import { use, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import client from "../client";
+import axiosClient from "../axiosClient";
 import { UserContext } from "../contexts/UserProvider";
 
 export default function Register() {
@@ -8,9 +8,11 @@ export default function Register() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmationRef = useRef();
-  const { setUser, setToken } = UserContext();
+  const { setUser, setToken, setIsAdmin } = use(UserContext);
+  const [errors, setErrors] = useState(null);
   const onSubmit = (e) => {
     e.preventDefault();
+    setErrors(null);
     const payload = {
       username: usernameRef.current.value,
       email: emailRef.current.value,
@@ -18,17 +20,16 @@ export default function Register() {
       password_confirmation: passwordConfirmationRef.current.value,
     };
 
-    client
+    axiosClient
       .post("/register", payload)
       .then(({ data }) => {
         setToken(data.token);
         setUser(data.user);
+        setIsAdmin(data.user.is_admin);
       })
       .catch((error) => {
-        const response = error.response;
-        if (response && response.status === 422) {
-          console.log(response.data.errors);
-        }
+        const { response } = error;
+        setErrors(response.data.errors);
       });
   };
   return (
@@ -48,7 +49,18 @@ export default function Register() {
             </Link>
           </p>
         </div>
-
+        {errors && (
+          <>
+            {Object.keys(errors).map((key) => (
+              <div
+                key={key}
+                className="border border-dashed p-2 rounded-lg text-lg text-red-600 my-4"
+              >
+                {errors[key]}
+              </div>
+            ))}
+          </>
+        )}
         <div className="mt-5">
           {/* Form */}
           <form onSubmit={onSubmit}>
