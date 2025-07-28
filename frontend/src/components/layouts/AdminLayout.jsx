@@ -1,10 +1,22 @@
-import { use } from "react";
+import { use, useEffect } from "react";
 import { Link, Navigate, Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/UserProvider";
+import axiosClient from "../../axiosClient";
 
 export default function AdminLayout() {
-  const { isAdmin } = use(UserContext);
-  if (!isAdmin()) {
+  const { user, setUser } = use(UserContext);
+  useEffect(() => {
+    axiosClient
+      .get("/user")
+      .then(({ data }) => {
+        setUser(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setUser(null);
+      });
+  }, []);
+  if (!user?.is_admin) {
     return <Navigate to="/login" replace />;
   }
   return (
@@ -239,7 +251,7 @@ export default function AdminLayout() {
   lg:block lg:translate-x-0 lg:end-auto lg:bottom-0
  "
         role="dialog"
-        tabindex="-1"
+        tabIndex="-1"
         aria-label="Sidebar"
       >
         <div className="relative flex flex-col h-full max-h-full">

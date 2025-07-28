@@ -8,7 +8,7 @@ export default function Register() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmationRef = useRef();
-  const { setUser, setToken, setIsAdmin } = use(UserContext);
+  const { setToken } = use(UserContext);
   const [errors, setErrors] = useState(null);
   const onSubmit = (e) => {
     e.preventDefault();
@@ -24,8 +24,6 @@ export default function Register() {
       .post("/register", payload)
       .then(({ data }) => {
         setToken(data.token);
-        setUser(data.user);
-        setIsAdmin(data.user.is_admin);
       })
       .catch((error) => {
         const { response } = error;

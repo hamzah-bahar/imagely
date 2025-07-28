@@ -1,13 +1,8 @@
-import { use } from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import { UserContext } from "../../contexts/UserProvider";
+import { Outlet } from "react-router-dom";
+
 import Header from "../Header";
 
 export default function DefaultLayout() {
-  const { isAuthenticated } = use(UserContext);
-  if (!isAuthenticated()) {
-    return <Navigate to="/login" replace />;
-  }
   return (
     <div>
       <Header />

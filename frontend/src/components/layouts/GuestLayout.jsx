@@ -1,11 +1,10 @@
 import { use } from "react";
 import { Link, Navigate, Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/UserProvider";
-import Header from "../Header";
 
 export default function GuestLayout() {
-  const { isAuthenticated } = use(UserContext);
-  if (isAuthenticated()) {
+  const { token } = use(UserContext);
+  if (token) {
     return <Navigate to="/home" replace />;
   }
   return (

@@ -1,15 +1,53 @@
 import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/UserProvider";
-import { use } from "react";
+import { use, useEffect, useState } from "react";
+import axiosClient from "../axiosClient";
 
 export default function Header() {
-  const { isAuthenticated } = use(UserContext);
+  const { user, token, setToken, setUser } = use(UserContext);
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    if (token) {
+      axiosClient
+        .get("/user")
+        .then(({ data }) => {
+          setUser(data);
+          if (data.is_admin == 0) {
+            setIsAdmin(false);
+          } else {
+            setIsAdmin(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+          setUser(null);
+          setToken(null);
+        });
+    }
+  }, []);
+  const onLogout = (e) => {
+    e.preventDefault();
+
+    axiosClient
+      .post("/logout")
+      .then(() => {
+        setToken(null);
+        setUser(null);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const onAdd = (e) => {
+    e.preventDefault();
+  };
   return (
-    <header className="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full bg-blue-800">
+    <header className="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full bg-gray-50 border-b border-gray-200 shadow-sm">
       <nav className="relative max-w-5xl w-full md:flex md:items-center md:justify-between md:gap-3 mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div className="flex items-center justify-between">
           <Link
-            className="flex-none font-semibold text-xl text-white focus:outline-hidden uppercase tracking-wider"
+            className="flex-none font-semibold text-xl text-gray-900 focus:outline-hidden uppercase tracking-wider"
             to="/home"
             aria-label="Brand"
           >
@@ -74,10 +112,50 @@ export default function Header() {
           <div className="overflow-hidden overflow-y-auto max-h-[75vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
             <div className="py-2 md:py-0 flex flex-col md:flex-row md:items-center md:justify-end gap-0.5 md:gap-1">
               {/* Button Group */}
+              {token && isAdmin && (
+                <Link
+                  className="font-bold md:inline-flex items-center justify-center px-2 py-1 text-sm font-semibold text-gray-900 hover:bg-gray-300 focus:outline-hidden focus:bg-gray-400 rounded-lg"
+                  to="/dashboard"
+                >
+                  Dashboard
+                </Link>
+              )}
+              {token && !isAdmin && (
+                <button
+                  onClick={onAdd}
+                  type="button"
+                  className="font-bold md:inline-flex items-center justify-center px-2 py-1 text-sm font-semibold text-gray-900 hover:bg-gray-300 focus:outline-hidden focus:bg-gray-400 rounded-lg"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <line
+                      x1="12"
+                      y1="5"
+                      x2="12"
+                      y2="19"
+                      stroke="black"
+                      strokeWidth="3"
+                    />
+                    <line
+                      x1="5"
+                      y1="12"
+                      x2="19"
+                      y2="12"
+                      stroke="black"
+                      strokeWidth="3"
+                    />
+                  </svg>
+                </button>
+              )}
               <div className="relative flex flex-wrap items-center gap-x-1.5 md:ps-2.5 mt-1 md:mt-0 md:ms-1.5 before:block before:absolute before:top-1/2 before:-start-px before:w-px before:h-4 before:bg-white/30 before:-translate-y-1/2">
-                {!isAuthenticated() && (
+                {!token && (
                   <Link
-                    className="p-2 w-full flex items-center text-sm text-white/80 hover:text-white focus:outline-hidden focus:text-white"
+                    className="p-2 w-full flex items-center text-sm text-gray-900 hover:text-gray-800 focus:outline-hidden focus:text-gray-800"
                     to="/login"
                   >
                     <svg
@@ -97,6 +175,36 @@ export default function Header() {
                     </svg>
                     Login
                   </Link>
+                )}
+                {token && (
+                  <div className="flex items-center justify-between">
+                    <span className="p-2 w-full flex items-center text-sm text-gray-900 hover:text-gray-900 focus:outline-hidden">
+                      {user?.username}
+                    </span>
+                    <button
+                      onClick={onLogout}
+                      type="button"
+                      aria-label="Logout"
+                      className="p-2 w-full flex items-center text-sm text-gray-900 hover:text-gray-900 focus:outline-hidden"
+                    >
+                      <svg
+                        className="shrink-0 size-4 me-3 md:me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                      Logout
+                    </button>
+                  </div>
                 )}
               </div>
               {/* End Button Group */}

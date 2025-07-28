@@ -12,6 +12,11 @@ import Home from "./views/Home";
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <DefaultLayout />,
+    children: [{ path: "/home", element: <Home /> }],
+  },
+  {
+    path: "/",
     element: <GuestLayout />,
     children: [
       {
@@ -23,11 +28,6 @@ const router = createBrowserRouter([
         element: <Register />,
       },
     ],
-  },
-  {
-    path: "/",
-    element: <DefaultLayout />,
-    children: [{ path: "/home", element: <Home /> }],
   },
   {
     path: "/",

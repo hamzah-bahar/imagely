@@ -6,7 +6,7 @@ import { UserContext } from "../contexts/UserProvider";
 export default function Login() {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const { setUser, setToken, setIsAdmin } = use(UserContext);
+  const { setToken } = use(UserContext);
   const [errors, setErrors] = useState(null);
   const onSubmit = (e) => {
     e.preventDefault();
@@ -15,13 +15,10 @@ export default function Login() {
       email: emailRef.current.value,
       password: passwordRef.current.value,
     };
-
     axiosClient
       .post("/login", payload)
       .then(({ data }) => {
         setToken(data.token);
-        setUser(data.user);
-        setIsAdmin(data.user.is_admin);
       })
       .catch((error) => {
         const { response } = error;
