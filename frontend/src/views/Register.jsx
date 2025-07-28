@@ -2,17 +2,23 @@ import { use, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../axiosClient";
 import { UserContext } from "../contexts/UserProvider";
+import Loading from "../components/Loading";
 
 export default function Register() {
   const usernameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmationRef = useRef();
+
   const { setToken } = use(UserContext);
+
   const [errors, setErrors] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = (e) => {
     e.preventDefault();
     setErrors(null);
+    setLoading(true);
     const payload = {
       username: usernameRef.current.value,
       email: emailRef.current.value,
@@ -24,10 +30,12 @@ export default function Register() {
       .post("/register", payload)
       .then(({ data }) => {
         setToken(data.token);
+        setLoading(false);
       })
       .catch((error) => {
         const { response } = error;
         setErrors(response.data.errors);
+        setLoading(false);
       });
   };
   return (
@@ -182,12 +190,15 @@ export default function Register() {
               </div>
               {/* End Form Group */}
 
-              <button
-                type="submit"
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-              >
-                Register
-              </button>
+              {!loading && (
+                <button
+                  type="submit"
+                  className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  Register
+                </button>
+              )}
+              {loading && <Loading />}
             </div>
           </form>
           {/* End Form */}

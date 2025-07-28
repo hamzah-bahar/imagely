@@ -2,15 +2,20 @@ import { use, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../axiosClient";
 import { UserContext } from "../contexts/UserProvider";
+import Loading from "../components/Loading";
 
 export default function Login() {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+
   const { setToken } = use(UserContext);
   const [errors, setErrors] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = (e) => {
     e.preventDefault();
     setErrors(null);
+    setLoading(true);
     const payload = {
       email: emailRef.current.value,
       password: passwordRef.current.value,
@@ -19,13 +24,16 @@ export default function Login() {
       .post("/login", payload)
       .then(({ data }) => {
         setToken(data.token);
+        setLoading(false);
       })
       .catch((error) => {
         const { response } = error;
         setErrors(response.data.errors);
+        setLoading(false);
         passwordRef.current.value = "";
       });
   };
+
   return (
     <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-2xs max-w-xl mx-auto w-full animate-slide-in">
       <div className="p-4 sm:p-7">
@@ -98,12 +106,15 @@ export default function Login() {
               </div>
               {/* End Form Group */}
 
-              <button
-                type="submit"
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-              >
-                Login
-              </button>
+              {!loading && (
+                <button
+                  type="submit"
+                  className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  Login
+                </button>
+              )}
+              {loading && <Loading />}
             </div>
           </form>
           {/* End Form */}
