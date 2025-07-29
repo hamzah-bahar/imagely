@@ -88,7 +88,7 @@ export default function UserForm() {
         </div>
       )}
       {!loading && (
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto max-w-2xl animate-slide-in">
           <div className="text-center">
             {!id && (
               <h2 className="text-xl text-gray-800 font-bold sm:text-3xl">

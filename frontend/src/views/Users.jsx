@@ -64,7 +64,7 @@ export default function Users() {
         <div className="-m-1.5 overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">
             {!loading && (
-              <div className="bg-white border border-gray-200 rounded-xl shadow-2xs overflow-hidden">
+              <div className="bg-white border border-gray-200 rounded-xl shadow-2xs overflow-hidden animate-slide-in">
                 {/* Header */}
                 <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200">
                   <div>
