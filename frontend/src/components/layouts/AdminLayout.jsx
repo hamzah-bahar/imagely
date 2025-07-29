@@ -2,9 +2,11 @@ import { use, useEffect } from "react";
 import { Link, Navigate, Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/UserProvider";
 import axiosClient from "../../axiosClient";
+import { NotificationContext } from "../../contexts/NotificationProvider";
 
 export default function AdminLayout() {
   const { user, setUser, setToken } = use(UserContext);
+  const { notification } = use(NotificationContext);
 
   useEffect(() => {
     axiosClient
@@ -279,12 +281,19 @@ export default function AdminLayout() {
       {/* End Sidebar */}
 
       {/* Content */}
-      <div className="w-full lg:ps-64">
+      <div className=" relative w-full lg:ps-64">
         <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           <Outlet />
         </div>
+        {/** Notification */}
+        {notification && (
+          <div className="animate-slide-in absolute top-0 right-[2%] m-2 w-full max-w-xl bg-green-400 border border-dashed px-4 py-2 rounded-lg text-lg text-green-900 my-4">
+            {notification}
+          </div>
+        )}
       </div>
       {/* End Content */}
+
       {/* ========== END MAIN CONTENT ========== */}
     </>
   );

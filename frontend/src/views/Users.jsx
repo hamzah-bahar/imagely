@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import axiosClient from "../axiosClient";
 import Loading from "../components/Loading";
 import { Link } from "react-router-dom";
+import { NotificationContext } from "../contexts/NotificationProvider";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [meta, setMeta] = useState({});
   const [links, setLinks] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const { setNotification } = use(NotificationContext);
 
   useEffect(() => {
     getUsers();
@@ -37,9 +40,9 @@ export default function Users() {
       .delete(`/users/${user.id}`)
       .then(() => {
         getUsers();
+        setNotification(`User "${user.username}" was successfuly deleted!`);
       })
       .catch(() => {});
-    console.log("delete clicked");
   };
 
   const handlePagination = (link) => {
