@@ -8,6 +8,7 @@ import DefaultLayout from "./components/layouts/DefaultLayout";
 import AdminLayout from "./components/layouts/AdminLayout";
 import Dashboard from "./views/Dashboard";
 import Home from "./views/Home";
+import UserForm from "./views/UserForm";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,14 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "/users/create",
+        element: <UserForm key="userCreate" />,
+      },
+      {
+        path: "/users/:id",
+        element: <UserForm key="userUpdate" />,
       },
     ],
   },
