@@ -13,11 +13,6 @@ import UserForm from "./views/UserForm";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <DefaultLayout />,
-    children: [{ path: "/home", element: <Home /> }],
-  },
-  {
-    path: "/",
     element: <GuestLayout />,
     children: [
       {
@@ -30,6 +25,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+
   {
     path: "/",
     element: <AdminLayout />,
@@ -51,6 +47,11 @@ const router = createBrowserRouter([
         element: <UserForm key="userUpdate" />,
       },
     ],
+  },
+  {
+    path: "/",
+    element: <DefaultLayout />,
+    children: [{ path: "/home", element: <Home /> }],
   },
 
   {

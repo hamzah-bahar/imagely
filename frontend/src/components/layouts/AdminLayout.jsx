@@ -4,7 +4,7 @@ import { UserContext } from "../../contexts/UserProvider";
 import axiosClient from "../../axiosClient";
 
 export default function AdminLayout() {
-  const { user, setUser } = use(UserContext);
+  const { user, setUser, setToken } = use(UserContext);
 
   useEffect(() => {
     axiosClient
@@ -20,6 +20,20 @@ export default function AdminLayout() {
   if (!user?.is_admin) {
     return <Navigate to="/login" replace />;
   }
+
+  const onLogout = (e) => {
+    e.preventDefault();
+
+    axiosClient
+      .post("/logout")
+      .then(() => {
+        setToken(null);
+        setUser(null);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   return (
     <>
       {/* ========== HEADER ========== */}
@@ -181,7 +195,7 @@ export default function AdminLayout() {
           {/* Content */}
           <div className="h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
             <nav
-              className="hs-accordion-group p-3 w-full flex flex-col flex-wrap"
+              className="hs-accordion-group p-3 w-full flex flex-col h-[100%] justify-between flex-wrap"
               data-hs-accordion-always-open
             >
               <ul className="flex flex-col space-y-1">
@@ -234,6 +248,29 @@ export default function AdminLayout() {
                   </Link>
                 </li>
               </ul>
+              <button
+                onClick={onLogout}
+                type="button"
+                aria-label="Logout"
+                className="p-2 w-full flex items-center text-sm text-gray-900 hover:text-gray-900 focus:outline-hidden"
+              >
+                <svg
+                  className="shrink-0 size-4 me-3 md:me-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="black"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                Logout
+              </button>
             </nav>
           </div>
           {/* End Content */}
