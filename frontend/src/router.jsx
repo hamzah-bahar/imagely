@@ -9,6 +9,7 @@ import AdminLayout from "./components/layouts/AdminLayout";
 import Dashboard from "./views/Dashboard";
 import Home from "./views/Home";
 import UserForm from "./views/UserForm";
+import Images from "./views/Images";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "/images",
+        element: <Images />,
       },
       {
         path: "/users/create",
