@@ -18,8 +18,10 @@ class ImageResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
+            'path' => $this->path,
             'slug' => $this->slug,
-            'user_id' => $this->user_id,
+            'username' => $this->user->username,
+            'useremail' => $this->user->email,
             'creation_date' => $this->created_at->format('Y-m-d')
         ];
     }

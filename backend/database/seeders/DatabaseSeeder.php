@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Image;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,6 +22,7 @@ class DatabaseSeeder extends Seeder
             'is_admin' => true,
         ]);
         User::factory(50)->create();
+        Image::factory(20)->create();
 
         // User::factory()->create([
         //     'name' => 'Test User',
