@@ -1,15 +1,14 @@
 import { use, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axiosClient from "../axiosClient";
 import Loading from "../components/Loading";
 import { NotificationContext } from "../contexts/NotificationProvider";
-import { Link, useNavigate } from "react-router-dom";
 
 export default function Images() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [metaLinks, setMetaLinks] = useState([]);
   const [links, setLinks] = useState({});
-  const navigate = useNavigate();
   const { setNotification } = use(NotificationContext);
   useEffect(() => {
     getImages();
