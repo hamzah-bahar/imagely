@@ -39,9 +39,6 @@ export default function Header() {
       });
   };
 
-  const onAdd = (e) => {
-    e.preventDefault();
-  };
   return (
     <header className="flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full bg-gray-50 border-b border-gray-200 shadow-sm">
       <nav className="relative max-w-5xl w-full md:flex md:items-center md:justify-between md:gap-3 mx-auto px-4 sm:px-6 lg:px-8 py-2">
@@ -121,8 +118,8 @@ export default function Header() {
                 </Link>
               )}
               {token && !isAdmin && (
-                <button
-                  onClick={onAdd}
+                <Link
+                  to="/home/images/create"
                   type="button"
                   className="font-bold md:inline-flex items-center justify-center px-2 py-1 text-sm font-semibold text-gray-900 hover:bg-gray-300 focus:outline-hidden focus:bg-gray-400 rounded-lg"
                 >
@@ -150,7 +147,7 @@ export default function Header() {
                       strokeWidth="3"
                     />
                   </svg>
-                </button>
+                </Link>
               )}
               <div className="relative flex flex-wrap items-center gap-x-1.5 md:ps-2.5 mt-1 md:mt-0 md:ms-1.5 before:block before:absolute before:top-1/2 before:-start-px before:w-px before:h-4 before:bg-white/30 before:-translate-y-1/2">
                 {!token && (

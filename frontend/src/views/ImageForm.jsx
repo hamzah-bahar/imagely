@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../axiosClient";
 import Loading from "../components/Loading";
 import { NotificationContext } from "../contexts/NotificationProvider";
+import { UserContext } from "../contexts/UserProvider";
 
 export default function ImageForm() {
   const { slug } = useParams();
@@ -17,6 +18,7 @@ export default function ImageForm() {
   const [errors, setErrors] = useState(null);
 
   const { setNotification } = use(NotificationContext);
+  const { user, setUser } = use(UserContext);
 
   const handleImageChange = (ev) => {
     if (ev.target.files && ev.target.files[0]) {
@@ -43,6 +45,17 @@ export default function ImageForm() {
     }
   }, [slug]);
 
+  useEffect(() => {
+    axiosClient
+      .get("/user")
+      .then(({ data }) => {
+        setUser(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   const onSubmit = (e) => {
     e.preventDefault();
     setErrors(null);
@@ -53,9 +66,14 @@ export default function ImageForm() {
     formData.append("description", image.description);
     image.image && formData.append("image", image.image);
 
+    const createUrl = user.is_admin ? "/images" : "/home/images";
+    const updateUrl = user.is_admin
+      ? `/images/${slug}`
+      : `/home/images/${slug}`;
+
     if (slug) {
       axiosClient
-        .post(`/images/${slug}`, formData, {
+        .post(updateUrl, formData, {
           headers: {
             "Content-Type": "Multipart/form-data",
           },
@@ -72,9 +90,13 @@ export default function ImageForm() {
         });
     } else {
       axiosClient
-        .post("/images", formData)
+        .post(createUrl, formData, {
+          headers: {
+            "Content-Type": "Multipart/form-data",
+          },
+        })
         .then(() => {
-          navigate("/images");
+          user.is_admin ? navigate("/images") : navigate("/home/images");
           setLoading(false);
           setNotification(`Image "${image.title}" was successfuly created!`);
         })
@@ -159,11 +181,6 @@ export default function ImageForm() {
                     ) : (
                       <></>
                     )}
-                    {/* {slug && (
-                      <div className="space-y-2">
-                        <img src={image.path} alt={image.title} />
-                      </div>
-                    )} */}
                     <div className="space-y-2">
                       <label
                         htmlFor="af-submit-app-upload-images"

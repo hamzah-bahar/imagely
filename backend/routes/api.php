@@ -19,9 +19,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/images/{image:slug}', [ImageController::class, 'show']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/home/user/images', [HomeController::class, 'imagesByUser']);
+    Route::post('/home/images', [HomeController::class, 'store']);
+    Route::post('/home/images/{image:slug}', [HomeController::class, 'update']);
+    Route::delete('/home/images/{image}', [HomeController::class, 'destroy']);
 });
 
 Route::get('/home/images', [HomeController::class, 'index']);
-Route::get('/home/user/images', [HomeController::class, 'imagesByUser']);
+Route::get('/home/images/{image:slug}', [HomeController::class, 'show']);
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);

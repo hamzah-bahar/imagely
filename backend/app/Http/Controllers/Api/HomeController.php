@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreImageRequest;
+use App\Http\Requests\UpdateImageRequest;
 use App\Http\Resources\ImageResource;
 use App\Models\Image;
 use Illuminate\Http\Request;
@@ -34,23 +36,36 @@ class HomeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreImageRequest $request, Image $image)
     {
-        //
+        $data = $request->validated();
+
+        $data['user_id'] = Auth::id();
+        $data['slug'] = \Illuminate\Support\Str::slug($data['title']);
+
+        // store the image in the storage 
+        $image = $data['image'];
+        unset($data['image']);
+        $imagePath = $image->store('images', 'public');
+        $data['path'] = config('app.url') . '/' . $imagePath;
+
+        $image = Image::create($data);
+
+        return response(new ImageResource($image), 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Image $image)
     {
-        //
+        return response(new ImageResource($image));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateImageRequest $request, Image $image)
     {
         //
     }
@@ -58,7 +73,7 @@ class HomeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Image $image)
     {
         //
     }

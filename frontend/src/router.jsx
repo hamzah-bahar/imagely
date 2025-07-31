@@ -66,7 +66,17 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <DefaultLayout />,
-    children: [{ path: "/home", element: <Home /> }],
+    children: [
+      { path: "/home", element: <Home /> },
+      {
+        path: "/home/images/create",
+        element: <ImageForm key="homeImageCreate" />,
+      },
+      {
+        path: "/home/images/:slug",
+        element: <ImageForm key="homeImageUpdate" />,
+      },
+    ],
   },
 
   {
