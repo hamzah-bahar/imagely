@@ -9,6 +9,7 @@ use App\Http\Resources\ImageResource;
 use App\Models\Image;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use \Illuminate\Support\Str;
 
 class ImageController extends Controller
 {
@@ -36,13 +37,13 @@ class ImageController extends Controller
         $data = $request->validated();
 
         $data['user_id'] = Auth::id();
-        $data['slug'] = \Illuminate\Support\Str::slug($data['title']);
+        $data['slug'] = Str::slug($data['title']);
 
         // store the image in the storage 
         $image = $data['image'];
         unset($data['image']);
         $imagePath = $image->store('images', 'public');
-        $data['path'] = $imagePath;
+        $data['path'] = config('app.url') . '/' . $imagePath;
 
         $image = Image::create($data);
 
@@ -63,23 +64,24 @@ class ImageController extends Controller
     public function update(UpdateImageRequest $request, Image $image)
     {
         $currentImagePath = $image->path;
-        $image->fill($request->all());
-
-        $changed = $image->getDirty();
-        if (empty($changed)) {
-            return response("", 200);
-        }
 
         $data = $request->validated();
 
-        if ($image->isDirty('path')) {
-            if ($currentImagePath && Storage::disk('public')->exists($currentImagePath)) {
-                Storage::disk('public')->delete($currentImagePath);
-            }
-            $newImage = $data['image'];
+        if ($currentImagePath && $request->file('image')) {
+            // remove app url from the currentImagePath 
+            $currentImagePath = Str::remove(config('app.url'), $currentImagePath, false);
+
+            // remove the image from the storage if exists
+            Storage::disk('public')->delete($currentImagePath);
+
+            // getting the new image from the request
+            $newImage = $request->file('image');
             unset($data['image']);
+
+            // store the new image in the storage
             $imagePath = $newImage->store('images', 'public');
-            $data['path'] = $imagePath;
+            // configure the image full path 
+            $data['path'] = config('app.url') . '/' . $imagePath;
         }
 
         $image->update($data);
@@ -93,8 +95,11 @@ class ImageController extends Controller
     public function destroy(Image $image)
     {
         // delete the image from the storage 
-        if ($image->path && Storage::disk('public')->exists($image->path)) {
-            Storage::disk('public')->delete($image->path);
+        $currentImagePath = $image->path;
+        // remove base url form the path
+        $currentImagePath = Str::remove(config('app.url'), $currentImagePath, false);
+        if ($currentImagePath && Storage::disk('public')->exists($currentImagePath)) {
+            Storage::disk('public')->delete($currentImagePath);
         }
 
         $image->delete();

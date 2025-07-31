@@ -10,6 +10,7 @@ import Dashboard from "./views/Dashboard";
 import Home from "./views/Home";
 import UserForm from "./views/UserForm";
 import Images from "./views/Images";
+import ImageForm from "./views/ImageForm";
 
 const router = createBrowserRouter([
   {
@@ -39,10 +40,7 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: <Dashboard />,
       },
-      {
-        path: "/images",
-        element: <Images />,
-      },
+
       {
         path: "/users/create",
         element: <UserForm key="userCreate" />,
@@ -50,6 +48,18 @@ const router = createBrowserRouter([
       {
         path: "/users/:id",
         element: <UserForm key="userUpdate" />,
+      },
+      {
+        path: "/images",
+        element: <Images />,
+      },
+      {
+        path: "/images/create",
+        element: <ImageForm key="imageCreate" />,
+      },
+      {
+        path: "/images/:slug",
+        element: <ImageForm key="imageUpdate" />,
       },
     ],
   },

@@ -2,13 +2,15 @@ import { use, useEffect, useState } from "react";
 import axiosClient from "../axiosClient";
 import Loading from "../components/Loading";
 import { NotificationContext } from "../contexts/NotificationProvider";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Images() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [metaLinks, setMetaLinks] = useState([]);
   const [links, setLinks] = useState({});
-  const { notification, setNotification } = use(NotificationContext);
+  const navigate = useNavigate();
+  const { setNotification } = use(NotificationContext);
   useEffect(() => {
     getImages();
   }, []);
@@ -44,6 +46,24 @@ export default function Images() {
         setLoading(false);
       })
       .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleImageDelete = (image) => {
+    if (!window.confirm("Are you sure you want to delete image?")) {
+      return;
+    }
+    setLoading(true);
+    axiosClient
+      .delete(`/images/${image.id}`)
+      .then(() => {
+        getImages();
+        setNotification(`Image ${image.title} was successfuly deleted!`);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
         setLoading(false);
       });
   };
@@ -329,6 +349,27 @@ export default function Images() {
                             </div>
                           </div>
                         </div>
+                        <Link
+                          className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                          to="/images/create"
+                        >
+                          <svg
+                            className="shrink-0 size-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M5 12h14" />
+                            <path d="M12 5v14" />
+                          </svg>
+                          Add Image
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -389,7 +430,7 @@ export default function Images() {
                             <a className="block p-6" href="#">
                               <div className="flex items-center gap-x-4">
                                 <img
-                                  className="shrink-0 size-24 rounded-lg"
+                                  className="shrink-0 size-24 rounded-lg object-cover"
                                   src={image.path}
                                   alt={image.title}
                                 />
@@ -433,7 +474,10 @@ export default function Images() {
                             </a>
                           </td>
                           <td className="size-px align-center px-6 py-3 text-start">
-                            <a className="block mb-2" href="#">
+                            <Link
+                              className="block mb-2"
+                              to={`/images/${image.slug}`}
+                            >
                               <span className="py-2 px-4 inline-flex items-center gap-x-1 text-xs font-medium bg-teal-100 text-teal-800 rounded-full">
                                 <svg
                                   className="size-2.5"
@@ -447,8 +491,11 @@ export default function Images() {
                                 </svg>
                                 Edit
                               </span>
-                            </a>
-                            <a className="block" href="#">
+                            </Link>
+                            <button
+                              className="block"
+                              onClick={() => handleImageDelete(image)}
+                            >
                               <span className="py-2 px-4 inline-flex items-center gap-x-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
                                 <svg
                                   className="size-2.5"
@@ -462,7 +509,7 @@ export default function Images() {
                                 </svg>
                                 Delete
                               </span>
-                            </a>
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -483,7 +530,11 @@ export default function Images() {
                               !link.label.includes("Next")
                           )
                           .map((link) => (
-                            <option selected={link.active} value={link.url}>
+                            <option
+                              key={link.url}
+                              selected={link.active}
+                              value={link.url}
+                            >
                               {link.label}
                             </option>
                           ))}

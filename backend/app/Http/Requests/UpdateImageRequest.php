@@ -23,7 +23,7 @@ class UpdateImageRequest extends FormRequest
     {
         return [
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg',
-            'title' => 'string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'string'
         ];
     }
