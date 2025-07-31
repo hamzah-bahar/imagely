@@ -11,6 +11,7 @@ import Home from "./views/Home";
 import UserForm from "./views/UserForm";
 import Images from "./views/Images";
 import ImageForm from "./views/ImageForm";
+import { RegularUserImages } from "./views/RegularUserImages";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
       {
         path: "/home/images/:slug",
         element: <ImageForm key="homeImageUpdate" />,
+      },
+      {
+        path: "/home/user/images",
+        element: <RegularUserImages />,
       },
     ],
   },

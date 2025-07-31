@@ -175,9 +175,12 @@ export default function Header() {
                 )}
                 {token && (
                   <div className="flex items-center justify-between">
-                    <span className="p-2 w-full flex items-center text-sm text-gray-900 hover:text-gray-900 focus:outline-hidden">
+                    <Link
+                      to="/home/user/images"
+                      className="p-2 w-full flex items-center text-sm text-gray-900 hover:text-gray-900 focus:outline-hidden"
+                    >
                       {user?.username}
-                    </span>
+                    </Link>
                     <button
                       onClick={onLogout}
                       type="button"
