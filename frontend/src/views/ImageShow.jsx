@@ -73,7 +73,7 @@ export default function ImageShow() {
                 />
               </figure>
               <p className="text-lg text-gray-800">{image.description}</p>
-              {user.email == image.useremail && (
+              {user?.email == image.useremail && (
                 <div className="flex size-px align-center gap-x-3 text-start">
                   <Link
                     className="block mb-2"
