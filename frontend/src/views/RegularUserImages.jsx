@@ -55,7 +55,7 @@ export function RegularUserImages() {
   return (
     <div className="mx-auto">
       <>
-        <h2 className="text-xl md:text-2xl lg:text-3xl mb-4">My Images</h2>
+        <h2 className="text-xl md:text-2xl lg:text-3xl my-6">My Images</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
           {loading ? (
             <Loading />

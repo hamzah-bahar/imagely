@@ -32,9 +32,10 @@ export default function ImageForm() {
 
   useEffect(() => {
     if (slug) {
+      const url = user.is_admin ? `/images/${slug}` : `/home/images/${slug}`;
       setLoading(true);
       axiosClient
-        .get(`/images/${slug}`)
+        .get(url)
         .then(({ data }) => {
           setImage(data);
           setLoading(false);
@@ -79,7 +80,7 @@ export default function ImageForm() {
           },
         })
         .then(() => {
-          navigate("/images");
+          user.is_admin ? navigate("/images") : navigate("/home/user/images");
           setLoading(false);
           setNotification(`Image "${image.title}" was successfuly updated!`);
         })
@@ -96,7 +97,7 @@ export default function ImageForm() {
           },
         })
         .then(() => {
-          user.is_admin ? navigate("/images") : navigate("/home/images");
+          user.is_admin ? navigate("/images") : navigate("/home/user/images");
           setLoading(false);
           setNotification(`Image "${image.title}" was successfuly created!`);
         })

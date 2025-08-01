@@ -39,6 +39,10 @@ class ImageController extends Controller
         $data['user_id'] = Auth::id();
         $data['slug'] = Str::slug($data['title']);
 
+        if (Image::where('slug', $data['slug'])->exists()) {
+            $data['slug'] = $data['slug'] . now()->timestamp;
+        }
+
         // store the image in the storage 
         $image = $data['image'];
         unset($data['image']);

@@ -9,6 +9,7 @@ use App\Http\Resources\ImageResource;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -43,6 +44,10 @@ class HomeController extends Controller
         $data['user_id'] = Auth::id();
         $data['slug'] = \Illuminate\Support\Str::slug($data['title']);
 
+        if (Image::where('slug', $data['slug'])->exists()) {
+            $data['slug'] = $data['slug'] . now()->timestamp;
+        }
+
         // store the image in the storage 
         $image = $data['image'];
         unset($data['image']);
@@ -67,7 +72,30 @@ class HomeController extends Controller
      */
     public function update(UpdateImageRequest $request, Image $image)
     {
-        //
+        $currentImagePath = $image->path;
+
+        $data = $request->validated();
+
+        if ($currentImagePath && $request->file('image')) {
+            // remove app url from the currentImagePath 
+            $currentImagePath = \Illuminate\Support\Str::remove(config('app.url'), $currentImagePath, false);
+
+            // remove the image from the storage if exists
+            Storage::disk('public')->delete($currentImagePath);
+
+            // getting the new image from the request
+            $newImage = $request->file('image');
+            unset($data['image']);
+
+            // store the new image in the storage
+            $imagePath = $newImage->store('images', 'public');
+            // configure the image full path 
+            $data['path'] = config('app.url') . '/' . $imagePath;
+        }
+
+        $image->update($data);
+
+        return response(new ImageResource($image));
     }
 
     /**
@@ -75,6 +103,16 @@ class HomeController extends Controller
      */
     public function destroy(Image $image)
     {
-        //
+        // delete the image from the storage 
+        $currentImagePath = $image->path;
+        // remove base url form the path
+        $currentImagePath = \Illuminate\Support\Str::remove(config('app.url'), $currentImagePath, false);
+        if ($currentImagePath && Storage::disk('public')->exists($currentImagePath)) {
+            Storage::disk('public')->delete($currentImagePath);
+        }
+
+        $image->delete();
+
+        return response("", 204);
     }
 }
