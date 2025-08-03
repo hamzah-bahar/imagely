@@ -73,6 +73,7 @@ export default function ImageForm() {
       : `/home/images/${slug}`;
 
     if (slug) {
+      formData.append("_method", "PUT");
       axiosClient
         .post(updateUrl, formData, {
           headers: {

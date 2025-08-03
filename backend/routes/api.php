@@ -15,7 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('/users', UserController::class);
     Route::apiResource('/images', ImageController::class)->except(['update', 'show']);
-    Route::post('/images/{image:slug}', [ImageController::class, 'update']);
+    Route::put('/images/{image:slug}', [ImageController::class, 'update']);
     Route::get('/images/{image:slug}', [ImageController::class, 'show']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
